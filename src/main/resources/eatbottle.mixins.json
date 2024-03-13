@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "archives.tater.eatbottle.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "GlassBottleItemMixin",
+    "ItemsMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+	}
+}
