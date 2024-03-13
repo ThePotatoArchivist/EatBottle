@@ -14,6 +14,11 @@
     "license": "MIT",
     "icon": "assets/eatbottle/icon.png",
     "environment": "*",
+    "entrypoints": {
+        "main": [
+            "archives.tater.eatbottle.EatBottle"
+        ]
+    },
     "mixins": [
         "eatbottle.mixins.json"
     ],

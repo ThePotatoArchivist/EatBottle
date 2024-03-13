@@ -28,7 +28,6 @@ public abstract class GlassBottleItemMixin extends Item {
             method = "use",
             cancellable = true)
     private void allowEat(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> cir) {
-        EatBottle.LOGGER.info("{}", cir.getReturnValue().getResult());
         if (cir.getReturnValue().getResult() == ActionResult.PASS) {
             cir.setReturnValue(super.use(world, user, hand));
         }

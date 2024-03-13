@@ -1,5 +1,6 @@
 package archives.tater.eatbottle;
 
+import net.fabricmc.api.ModInitializer;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageType;
 import net.minecraft.item.FoodComponent;
@@ -10,7 +11,7 @@ import net.minecraft.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EatBottle {
+public class EatBottle implements ModInitializer {
 	// This logger is used to write text to the console and the log file.
 	// It is considered best practice to use your mod id as the logger's name.
 	// That way, it's clear which mod wrote info, warnings, and errors.
@@ -27,4 +28,8 @@ public class EatBottle {
 		return new DamageSource(world.getRegistryManager().get(RegistryKeys.DAMAGE_TYPE).entryOf(key));
 	}
 
+	@Override
+	public void onInitialize() {
+
+	}
 }
