@@ -8,14 +8,13 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.GlassBottleItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Mixin(GlassBottleItem.class)
 public abstract class GlassBottleItemMixin extends Item {
@@ -23,21 +22,25 @@ public abstract class GlassBottleItemMixin extends Item {
         super(settings);
     }
 
+    @ModifyArg(
+            method = "<init>",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;<init>(Lnet/minecraft/item/Item$Settings;)V")
+    )
+    private static Settings setFood(Settings settings) {
+        return settings.food(EatBottle.GLASS_BOTTLE_FOOD, EatBottle.GLASS_BOTTLE_CONSUMABLE);
+    }
+
     @ModifyReturnValue(
             at = @At("RETURN"),
             method = "use")
-    private TypedActionResult<ItemStack> allowEat(TypedActionResult<ItemStack> original, @Local(argsOnly = true) World world, @Local(argsOnly = true)PlayerEntity user, @Local(argsOnly = true) Hand hand) {
-        return original.getResult() == ActionResult.PASS ? super.use(world, user, hand) : original;
-    }
-
-    @Override
-    public SoundEvent getEatSound() {
-        return SoundEvents.BLOCK_GLASS_BREAK;
+    private ActionResult allowEat(ActionResult original, @Local(argsOnly = true) World world, @Local(argsOnly = true)PlayerEntity user, @Local(argsOnly = true) Hand hand) {
+        return original == ActionResult.PASS ? super.use(world, user, hand) : original;
     }
 
     @Override
     public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
-        user.damage(EatBottle.of(world, EatBottle.EAT_GLASS_DAMAGE_TYPE), 1f);
+        if (world instanceof ServerWorld serverWorld)
+            user.damage(serverWorld, EatBottle.of(world, EatBottle.EAT_GLASS_DAMAGE_TYPE), 1f);
         return super.finishUsing(stack, world, user);
     }
 }

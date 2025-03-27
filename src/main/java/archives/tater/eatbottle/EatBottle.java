@@ -1,11 +1,14 @@
 package archives.tater.eatbottle;
 
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.component.type.ConsumableComponent;
 import net.minecraft.component.type.FoodComponent;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageType;
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import org.slf4j.Logger;
@@ -29,10 +32,14 @@ public class EatBottle implements ModInitializer {
 			.alwaysEdible()
 			.build();
 
+	public static ConsumableComponent GLASS_BOTTLE_CONSUMABLE = ConsumableComponent.builder()
+			.sound(Registries.SOUND_EVENT.getEntry(SoundEvents.BLOCK_GLASS_BREAK))
+			.build();
+
 	public static final RegistryKey<DamageType> EAT_GLASS_DAMAGE_TYPE = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, id("eat_glass"));
 
 	public static DamageSource of(World world, RegistryKey<DamageType> key) {
-		return new DamageSource(world.getRegistryManager().get(RegistryKeys.DAMAGE_TYPE).entryOf(key));
+		return new DamageSource(world.getRegistryManager().getOrThrow(RegistryKeys.DAMAGE_TYPE).getOrThrow(key));
 	}
 
 	@Override
