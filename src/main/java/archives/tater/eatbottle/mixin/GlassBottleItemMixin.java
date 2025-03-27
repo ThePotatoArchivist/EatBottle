@@ -1,6 +1,8 @@
 package archives.tater.eatbottle.mixin;
 
 import archives.tater.eatbottle.EatBottle;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.GlassBottleItem;
@@ -14,8 +16,6 @@ import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(GlassBottleItem.class)
 public abstract class GlassBottleItemMixin extends Item {
@@ -23,14 +23,11 @@ public abstract class GlassBottleItemMixin extends Item {
         super(settings);
     }
 
-    @Inject(
+    @ModifyReturnValue(
             at = @At("RETURN"),
-            method = "use",
-            cancellable = true)
-    private void allowEat(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> cir) {
-        if (cir.getReturnValue().getResult() == ActionResult.PASS) {
-            cir.setReturnValue(super.use(world, user, hand));
-        }
+            method = "use")
+    private TypedActionResult<ItemStack> allowEat(TypedActionResult<ItemStack> original, @Local(argsOnly = true) World world, @Local(argsOnly = true)PlayerEntity user, @Local(argsOnly = true) Hand hand) {
+        return original.getResult() == ActionResult.PASS ? super.use(world, user, hand) : original;
     }
 
     @Override
