@@ -14,20 +14,11 @@ import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Mixin(GlassBottleItem.class)
 public abstract class GlassBottleItemMixin extends Item {
     public GlassBottleItemMixin(Settings settings) {
         super(settings);
-    }
-
-    @ModifyArg(
-            method = "<init>",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;<init>(Lnet/minecraft/item/Item$Settings;)V")
-    )
-    private static Settings setFood(Settings settings) {
-        return settings.food(EatBottle.GLASS_BOTTLE_FOOD, EatBottle.GLASS_BOTTLE_CONSUMABLE);
     }
 
     @ModifyReturnValue(
