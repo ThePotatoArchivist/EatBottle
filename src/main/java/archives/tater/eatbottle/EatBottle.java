@@ -1,9 +1,12 @@
 package archives.tater.eatbottle;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.item.v1.DefaultItemComponentEvents;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.FoodComponent;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageType;
+import net.minecraft.item.Items;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
@@ -37,6 +40,8 @@ public class EatBottle implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-
+		DefaultItemComponentEvents.MODIFY.register(context ->
+				context.modify(Items.GLASS_BOTTLE, builder ->
+						builder.add(DataComponentTypes.FOOD, GLASS_BOTTLE_FOOD)));
 	}
 }
