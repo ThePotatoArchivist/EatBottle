@@ -3,35 +3,35 @@ package archives.tater.eatbottle.mixin;
 import archives.tater.eatbottle.EatBottle;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.GlassBottleItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BottleItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(GlassBottleItem.class)
+@Mixin(BottleItem.class)
 public abstract class GlassBottleItemMixin extends Item {
-    public GlassBottleItemMixin(Settings settings) {
+    public GlassBottleItemMixin(Properties settings) {
         super(settings);
     }
 
     @ModifyReturnValue(
             at = @At("RETURN"),
             method = "use")
-    private ActionResult allowEat(ActionResult original, @Local(argsOnly = true) World world, @Local(argsOnly = true)PlayerEntity user, @Local(argsOnly = true) Hand hand) {
-        return original == ActionResult.PASS ? super.use(world, user, hand) : original;
+    private InteractionResult allowEat(InteractionResult original, @Local(argsOnly = true) Level world, @Local(argsOnly = true)Player user, @Local(argsOnly = true) InteractionHand hand) {
+        return original == InteractionResult.PASS ? super.use(world, user, hand) : original;
     }
 
     @Override
-    public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
-        if (world instanceof ServerWorld serverWorld)
-            user.damage(serverWorld, EatBottle.of(world, EatBottle.EAT_GLASS_DAMAGE_TYPE), 1f);
-        return super.finishUsing(stack, world, user);
+    public ItemStack finishUsingItem(ItemStack stack, Level world, LivingEntity user) {
+        if (world instanceof ServerLevel serverWorld)
+            user.hurtServer(serverWorld, EatBottle.of(world, EatBottle.EAT_GLASS_DAMAGE_TYPE), 1f);
+        return super.finishUsingItem(stack, world, user);
     }
 }
